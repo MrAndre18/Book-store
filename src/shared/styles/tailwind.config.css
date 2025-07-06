@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+@theme {
+  --default-font-family: 'Inter', 'sans-serif';
+  --font-sans: var(--default-font-family);
+
+  --color-brand-primary: #0077b6;
+  --color-primary: #001219;
+
+  --color-chart-violet: #9600ff;
+  --color-chart-pink: #ff00c1;
+  --color-chart-green: #95e214;
+  --color-chart-yellow: #fff700;
+  --color-chart-orange: #f6511d;
+  --color-chart-blue: #00a6ed;
+
+  --default-transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+
+  --default-transition-duration: 0.5s;
+}
