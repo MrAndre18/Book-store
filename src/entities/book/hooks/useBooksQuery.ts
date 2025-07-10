@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { getBooksList, getBook } from '../api';
+import { getBooksList, getBookById } from '../api';
 import { IBook } from '../model/types';
-import { MESSAGES, PAGINATION } from '@shared/constants';
+import { MESSAGES } from '@shared/constants';
 
 interface UseBooksQueryReturn {
   // Список книг
@@ -47,8 +47,9 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
       } else {
         setBooks(prev => [...prev, ...result]);
       }
-    } catch (error: any) {
-      setBooksError(error.message || MESSAGES.errors.booksLoadFailed);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      setBooksError(err.message || MESSAGES.errors.booksLoadFailed);
       if (page === 0) {
         setBooks([]);
       }
@@ -57,16 +58,17 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
     }
   }, []);
 
-  // Получение одной книги
-  const getBookById = useCallback(async (id: string) => {
+  // Получение одной книги по id
+  const getBook = useCallback(async (id: string) => {
     setBookLoading(true);
     setBookError(null);
 
     try {
-      const result = await getBook(id);
-      setCurrentBook(result[0]); // getBook возвращает массив, берем первый элемент
-    } catch (error: any) {
-      setBookError(error.message || MESSAGES.errors.bookLoadFailed);
+      const result = await getBookById(id);
+      setCurrentBook(result);
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      setBookError(err.message || MESSAGES.errors.bookLoadFailed);
       setCurrentBook(null);
     } finally {
       setBookLoading(false);
@@ -84,6 +86,6 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
     currentBook,
     bookLoading,
     bookError,
-    getBook: getBookById,
+    getBook,
   };
 }; 

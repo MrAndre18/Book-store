@@ -28,7 +28,10 @@ export const BookCard: React.FC<BookCardProps> = ({
   };
 
   return (
-    <div ref={isLast ? lastElementRef : null} className={CSS_CLASSES.bookCard}>
+    <div
+      ref={isLast ? lastElementRef : null}
+      className={CSS_CLASSES.bookCard}
+      data-testid='book-card'>
       <div className={CSS_CLASSES.bookImage}>
         {book.volumeInfo.imageLinks?.thumbnail ? (
           <img

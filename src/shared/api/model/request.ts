@@ -4,7 +4,6 @@ import { ErrorResponse } from './type'
 import { errorMap } from './errorMap'
 import { ErrorEventEmitter, eventEmitter } from '@features/error-handler'
 import { API_DOMAIN } from '@shared/constants'
-import { getFromLocalStorage, localStorageKeys } from '@shared/utils'
 
 const isProduction = false
 

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { IBook } from '@entities/book';
 import { BookCard, LoadingSpinner, ErrorMessage } from '@shared/ui';
 import { useInfiniteScroll } from '@shared/hooks';
 import { useFavorites } from '@features/favorites';
-import { MESSAGES, PAGINATION } from '@shared/constants';
+import { MESSAGES } from '@shared/constants';
 
 interface BookListProps {
   books: IBook[];

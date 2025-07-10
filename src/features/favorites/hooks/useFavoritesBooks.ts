@@ -13,27 +13,30 @@ export const useFavoritesBooks = () => {
   const favoriteIds = favorites.map(favorite => favorite.id);
 
   useEffect(() => {
+    let isCancelled = false;
+    setBooks([]);
     const loadBooks = async () => {
       if (favoriteIds.length === 0) {
         setBooks([]);
         return;
       }
-
       setLoading(true);
       setError(null);
-
       try {
-        const loadedBooks = await getBooksByIds(favoriteIds);
-        setBooks(loadedBooks);
-      } catch (err) {
-        setError('Не удалось загрузить избранные книги');
+        await getBooksByIds(favoriteIds, (book) => {
+          if (!isCancelled) {
+            setBooks(prev => [...prev, book]);
+          }
+        });
+      } catch {
+        if (!isCancelled) setError('Не удалось загрузить избранные книги');
       } finally {
-        setLoading(false);
+        if (!isCancelled) setLoading(false);
       }
     };
-
     loadBooks();
-  }, [favoriteIds.join(',')]); // Используем строку ID как зависимость
+    return () => { isCancelled = true; };
+  }, [favoriteIds]);
 
   return {
     favoritesBooks: books,

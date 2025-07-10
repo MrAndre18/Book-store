@@ -3,32 +3,33 @@ import { $api } from '@shared/api';
 import { API_DOMAIN, API_ENDPOINTS } from '@shared/constants';
 import { IBook } from '@entities/book';
 
-// Функция для получения одной книги по ID
-const getBookById = async (bookId: string): Promise<IBook | null> => {
+// Получить одну книгу по ID
+export const getBookById = async (bookId: string): Promise<IBook | null> => {
   try {
     const response: AxiosResponse<IBook> = await $api.get(`${API_DOMAIN}${API_ENDPOINTS.getBooks}/${bookId}`);
     return response.data;
-  } catch (error) {
-    console.error('Ошибка при загрузке книги:', bookId, error);
+  } catch {
     return null;
   }
 };
 
-// Функция для получения нескольких книг по массиву ID
-export const getBooksByIds = async (bookIds: string[]): Promise<IBook[]> => {
+// Получить массив книг по массиву ID (одновременные запросы, onBookLoaded для каждой)
+export const getBooksByIds = async (
+  bookIds: string[],
+  onBookLoaded?: (book: IBook) => void
+): Promise<IBook[]> => {
   if (bookIds.length === 0) {
     return [];
   }
-
-  const books: IBook[] = [];
-
-  // Загружаем книги последовательно
-  for (const id of bookIds) {
-    const book = await getBookById(id);
-    if (book) {
-      books.push(book);
-    }
-  }
-
-  return books;
+  const results: IBook[] = [];
+  await Promise.all(
+    bookIds.map(async (id) => {
+      const book = await getBookById(id);
+      if (book) {
+        results.push(book);
+        if (onBookLoaded) onBookLoaded(book);
+      }
+    })
+  );
+  return results;
 }; 

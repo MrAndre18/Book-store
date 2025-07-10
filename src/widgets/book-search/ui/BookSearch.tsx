@@ -1,6 +1,6 @@
 import React from 'react';
 import { SearchInput, CategoryFilter } from '@shared/ui';
-import { BOOK_CATEGORIES, MESSAGES } from '@shared/constants';
+import { MESSAGES } from '@shared/constants';
 
 interface BookSearchProps {
   query: string;
@@ -16,13 +16,13 @@ export const BookSearch: React.FC<BookSearchProps> = ({
   onFilterChange,
 }) => {
   return (
-    <div className='mb-8 space-y-4'>
+    <div className='flex flex-col md:flex-row gap-4 mb-6'>
       <SearchInput
         value={query}
         onChange={onQueryChange}
         placeholder={MESSAGES.ui.searchPlaceholder}
+        className='flex-1'
       />
-
       <CategoryFilter value={filter} onChange={onFilterChange} />
     </div>
   );

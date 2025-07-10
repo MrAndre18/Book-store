@@ -4,18 +4,18 @@ import { useBooksQuery } from '@entities/book';
 import { BookSearch } from '@widgets/book-search';
 import { BookList } from '@widgets/book-list';
 import { MESSAGES, PAGINATION, BOOK_CATEGORIES } from '@shared/constants';
+import { IBook } from '@entities/book';
 
 export const HomePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [filter, setFilter] = useState(searchParams.get('filter') || '');
   const [page, setPage] = useState(0);
-  const [allBooks, setAllBooks] = useState<any[]>([]);
+  const [allBooks, setAllBooks] = useState<IBook[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
   const { searchBooks, books, booksLoading, booksError } = useBooksQuery();
 
-  // Обновляем URL при изменении поиска или фильтра
   useEffect(() => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
@@ -23,7 +23,6 @@ export const HomePage = () => {
     setSearchParams(params);
   }, [query, filter, setSearchParams]);
 
-  // Поиск при изменении параметров
   useEffect(() => {
     if (query.trim()) {
       setAllBooks([]);
@@ -36,14 +35,12 @@ export const HomePage = () => {
     }
   }, [query, filter, searchBooks]);
 
-  // Загрузка следующей страницы
   useEffect(() => {
     if (page > 0 && query.trim()) {
       searchBooks(query.trim(), filter, page);
     }
   }, [page, query, filter, searchBooks]);
 
-  // Добавляем новые книги к списку
   useEffect(() => {
     if (books.length > 0) {
       setAllBooks(prev => [...prev, ...books]);
