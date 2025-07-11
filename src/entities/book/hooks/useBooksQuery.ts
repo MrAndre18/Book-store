@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { getBooksList, getBookById } from '../api';
 import { IBookCard } from '../model/types';
-import { MESSAGES } from '@shared/constants';
 import { FilterValues } from '@shared/ui/filter-group/ui/FilterGroup';
 
 interface BooksQueryResult {
@@ -47,7 +46,9 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
     const currentRequest = { query: query.trim(), filters, page };
     if (lastRequestRef.current &&
       lastRequestRef.current.query === currentRequest.query &&
-      JSON.stringify(lastRequestRef.current.filters) === JSON.stringify(currentRequest.filters) &&
+      lastRequestRef.current.filters.filter === currentRequest.filters.filter &&
+      lastRequestRef.current.filters.orderBy === currentRequest.filters.orderBy &&
+      lastRequestRef.current.filters.langRestrict === currentRequest.filters.langRestrict &&
       lastRequestRef.current.page === currentRequest.page) {
       // Запрос дублируется, пропускаем
       return;
@@ -73,7 +74,7 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
     } catch (error: unknown) {
       if (currentRequestId === requestCounterRef.current) {
         const err = error as { message?: string };
-        setBooksError(err.message || MESSAGES.errors.booksLoadFailed);
+        setBooksError("Не удалось загрузить книги. Попробуйте позже");
         if (page === 0) {
           setBooks([]);
           setLastBooksResult(null);
@@ -95,7 +96,7 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
       setCurrentBook(result);
     } catch (error: unknown) {
       const err = error as { message?: string };
-      setBookError(err.message || MESSAGES.errors.bookLoadFailed);
+      setBookError("Не удалось загрузить книги. Попробуйте позже");
       setCurrentBook(null);
     } finally {
       setBookLoading(false);

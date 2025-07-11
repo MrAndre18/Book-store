@@ -9,7 +9,6 @@ interface BooksListParams {
   startIndex: number;
   maxResults: number;
   filter?: string;
-  printType?: string;
   orderBy?: string;
   langRestrict?: string;
   fields?: string;
@@ -30,10 +29,6 @@ export const getBooksList = async (
   // Добавляем фильтры только если они заданы
   if (filters.filter) {
     params.filter = filters.filter;
-  }
-
-  if (filters.printType && filters.printType !== 'all') {
-    params.printType = filters.printType;
   }
 
   if (filters.orderBy && filters.orderBy !== 'relevance') {

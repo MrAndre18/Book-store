@@ -83,14 +83,14 @@ const handleResponseError = (error: AxiosError<ErrorResponse>): void => {
     // Сетевые ошибки (неправильный URL, нет интернета и т.д.)
     const errorData: ErrorEventEmitter = {
       action: 'toast',
-      message: 'Ошибка сети. Проверьте подключение к интернету или правильность URL.'
+      message: 'Не удалось загрузить книги. Попробуйте позже'
     }
     eventEmitter.emit('request-error', errorData)
   } else {
     // Другие ошибки
     const errorData: ErrorEventEmitter = {
       action: 'toast',
-      message: error.message || 'Произошла неизвестная ошибка'
+      message: 'Не удалось загрузить книги. Попробуйте позже'
     }
     eventEmitter.emit('request-error', errorData)
   }

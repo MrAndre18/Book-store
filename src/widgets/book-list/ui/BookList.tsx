@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { IBookCard } from '@entities/book';
-import { BookCard, LoadingSpinner, ErrorMessage } from '@shared/ui';
+import { BookCard, LoadingSpinner } from '@shared/ui';
 import { useInfiniteScroll } from '@shared/hooks';
 import { useFavorites } from '@features/favorites';
+import { toast } from 'react-toastify';
 
 interface BookListProps {
   books: IBookCard[];
@@ -28,21 +29,23 @@ export const BookList: React.FC<BookListProps> = ({
     onLoadMore,
   });
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
   if (error) {
-    return <ErrorMessage message={error} className='mb-6' />;
+    return null;
   }
 
   if (books.length === 0 && !loading) {
-    return (
-      <div className='text-center py-16'>
-        <p className='text-gray-400 text-base'>Книги не найдены</p>
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className='space-y-8'>
-      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+      <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'>
         {books.map((book, index) => (
           <BookCard
             key={book.id}

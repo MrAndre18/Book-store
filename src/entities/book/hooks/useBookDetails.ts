@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { IBookDetails } from '@entities/book';
 import { getBookDetails } from '@entities/book/api';
-import { MESSAGES } from '@shared/constants';
 
 interface UseBookDetailsReturn {
   bookDetails: IBookDetails | null;
@@ -30,7 +29,7 @@ export const useBookDetails = (bookId: string): UseBookDetailsReturn => {
       }
     } catch (error: unknown) {
       const err = error as { message?: string };
-      setError(err.message || MESSAGES.errors.bookLoadFailed || 'Ошибка загрузки книги');
+      setError(err.message || 'Ошибка загрузки книги');
     } finally {
       setLoading(false);
     }

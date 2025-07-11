@@ -37,7 +37,6 @@ export interface IBookDetails {
     infoLink?: string;
     canonicalVolumeLink?: string;
     industryIdentifiers?: IndustryIdentifier[];
-    printType?: string;
     readingModes?: ReadingModes;
   };
   saleInfo?: {
@@ -117,7 +116,6 @@ export interface VolumeInfo {
   industryIdentifiers: IndustryIdentifier[];
   readingModes: ReadingModes;
   pageCount: number;
-  printType: string;
   categories: string[];
   maturityRating: string;
   allowAnonLogging: boolean;
@@ -157,3 +155,5 @@ export interface IBookCard {
   authors: string[] | null;
   image: string | null;
 }
+
+// Интерфейсы для фильтров перенесены в FilterGroup.tsx для лучшей организации

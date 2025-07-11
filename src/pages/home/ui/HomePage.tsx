@@ -3,15 +3,15 @@ import { useSearchParams } from 'react-router';
 import { useBooksQuery } from '@entities/book';
 import { BookSearch } from '@widgets/book-search';
 import { BookList } from '@widgets/book-list';
-import { MESSAGES, API_LIMITS } from '@shared/constants';
+import { API_LIMITS } from '@shared/constants';
 import { IBookCard } from '@entities/book';
 import { FilterValues } from '@shared/ui/filter-group/ui/FilterGroup';
 import { FilterGroup } from '@shared/ui/filter-group';
+import { toast } from 'react-toastify';
 
-// Значения фильтров по умолчанию
+// Дефолтные фильтры
 const defaultFilters: FilterValues = {
   filter: '',
-  printType: 'all',
   orderBy: 'relevance',
   langRestrict: '',
 };
@@ -21,7 +21,6 @@ export const HomePage = () => {
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [filters, setFilters] = useState<FilterValues>({
     filter: searchParams.get('filter') || defaultFilters.filter,
-    printType: searchParams.get('printType') || defaultFilters.printType,
     orderBy: searchParams.get('orderBy') || defaultFilters.orderBy,
     langRestrict:
       searchParams.get('langRestrict') || defaultFilters.langRestrict,
@@ -41,7 +40,6 @@ export const HomePage = () => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
     if (filters.filter) params.set('filter', filters.filter);
-    if (filters.printType !== 'all') params.set('printType', filters.printType);
     if (filters.orderBy !== 'relevance') params.set('orderBy', filters.orderBy);
     if (filters.langRestrict) params.set('langRestrict', filters.langRestrict);
     setSearchParams(params);
@@ -107,6 +105,19 @@ export const HomePage = () => {
     }
   }, [lastBooksResult]);
 
+  // Показываем toast для пустого результата поиска
+  useEffect(() => {
+    if (
+      lastBooksResult &&
+      lastBooksResult.page === 0 &&
+      lastBooksResult.books.length === 0 &&
+      query.trim() &&
+      !booksLoading
+    ) {
+      toast.info('Ничего не найдено по вашему запросу');
+    }
+  }, [lastBooksResult, query, booksLoading]);
+
   const handleLoadMore = () => {
     if (!booksLoading && hasMore) {
       setCurrentPage(prev => prev + 1);
@@ -141,16 +152,6 @@ export const HomePage = () => {
       if (filterLabel) activeFilters.push(filterLabel);
     }
 
-    if (filters.printType && filters.printType !== 'all') {
-      const printTypeLabel =
-        filters.printType === 'books'
-          ? 'только книги'
-          : filters.printType === 'magazines'
-          ? 'только журналы'
-          : '';
-      if (printTypeLabel) activeFilters.push(printTypeLabel);
-    }
-
     if (filters.orderBy && filters.orderBy !== 'relevance') {
       const orderByLabel = filters.orderBy === 'newest' ? 'по новизне' : '';
       if (orderByLabel) activeFilters.push(orderByLabel);
@@ -174,14 +175,10 @@ export const HomePage = () => {
       <h1 className='text-2xl font-semibold text-gray-900 !mb-6 tracking-tight'>
         Поиск книг
       </h1>
-      <div className='flex flex-col lg:flex-row gap-8'>
+      <div className='flex flex-col xl:flex-row gap-8'>
         {/* Боковая панель фильтров */}
-        <aside className='lg:w-96 w-full mb-4 lg:mb-0'>
-          <FilterGroup
-            values={filters}
-            onChange={handleFiltersChange}
-            className='sticky top-8'
-          />
+        <aside className='xl:w-96 w-full mb-4 xl:mb-0'>
+          <FilterGroup values={filters} onChange={handleFiltersChange} />
         </aside>
         {/* Основная часть: поиск и результаты */}
         <section className='flex-1 min-w-0'>

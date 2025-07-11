@@ -1,18 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router';
 import { ArrowLeft, BookOpen } from 'lucide-react';
 import { useBookDetails } from '@entities/book';
 import { useFavorites } from '@features/favorites';
 import { LoadingSpinner } from '@shared/ui/loading-spinner';
-import { ErrorMessage } from '@shared/ui/error-message';
 import { routes } from '@shared/routes';
 import { BookSidebar } from './BookSidebar';
 import { BookContent } from './BookContent';
+import { toast } from 'react-toastify';
 
 export const BookPage: React.FC = () => {
   const { bookId } = useParams<{ bookId: string }>();
   const { bookDetails, loading, error } = useBookDetails(bookId || '');
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   if (loading) {
     return (
@@ -31,7 +37,6 @@ export const BookPage: React.FC = () => {
     return (
       <div className='flex flex-col items-center justify-center min-h-[60vh] '>
         <div className='flex flex-col items-center gap-4 p-6 rounded-lg shadow-md '>
-          <ErrorMessage message={error} />
           <Link
             to={routes.home}
             className='flex items-center gap-2 text-blue-600 hover:underline text-base font-medium'>

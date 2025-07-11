@@ -14,7 +14,7 @@ export const useFavorites = () => {
 
     if (!isAlreadyFavorite) {
       dispatch(addToFavorites(book));
-      toast.success('Книга добавлена в избранное');
+      toast.info('Книга добавлена в избранное');
     }
   }, [dispatch, favorites]);
 
@@ -23,7 +23,7 @@ export const useFavorites = () => {
 
     if (favoriteBook) {
       dispatch(removeFromFavorites(bookId));
-      toast.success('Книга удалена из избранного');
+      toast.info('Книга удалена из избранного');
     }
   }, [dispatch, favorites]);
 

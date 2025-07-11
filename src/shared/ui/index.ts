@@ -1,7 +1,6 @@
 // UI компоненты
 export { BookCard } from './book-card';
 export { CategoryFilter } from './category-filter';
-export { ErrorMessage } from './error-message';
 export { LoadingSpinner } from './loading-spinner';
 export { Logo } from './logo';
 export { SearchInput } from './search-input';
