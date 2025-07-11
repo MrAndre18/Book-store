@@ -1,147 +1,117 @@
-import { useState, useCallback } from 'react';
-import { getBooksList, getBook } from '../api';
-import { IBook } from '../model/types';
+import { useState, useCallback, useRef } from 'react';
+import { getBooksList, getBookById } from '../api';
+import { IBookCard, IBook } from '../model/types';
+import { FilterValues } from '@shared/ui/filter-group/ui/FilterGroup';
+
+interface BooksQueryResult {
+  books: IBookCard[];
+  page: number;
+  requestId: number;
+}
 
 interface UseBooksQueryReturn {
-  // Список книг
-  books: IBook[];
+  books: IBookCard[];
   booksLoading: boolean;
   booksError: string | null;
-  searchBooks: (query: string, filter?: string, page?: number) => void;
-
-  // Текущая книга
+  searchBooks: (query: string, filters: FilterValues, page?: number) => void;
+  lastBooksResult: BooksQueryResult | null;
   currentBook: IBook | null;
   bookLoading: boolean;
   bookError: string | null;
   getBook: (id: string) => void;
-
-  // Избранное (localStorage)
-  favorites: IBook[];
-  addToFavorites: (book: IBook) => void;
-  removeFromFavorites: (bookId: string) => void;
-  isFavorite: (bookId: string) => boolean;
-  getFavoritesCount: () => number;
 }
 
-const FAVORITES_KEY = 'book_favorites';
-
-const getFavorites = (): IBook[] => {
-  try {
-    const stored = localStorage.getItem(FAVORITES_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-};
-
-const setFavorites = (favorites: IBook[]) => {
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-};
-
 export const useBooksQuery = (): UseBooksQueryReturn => {
-  // Состояние для списка книг
-  const [books, setBooks] = useState<IBook[]>([]);
+  const [books, setBooks] = useState<IBookCard[]>([]);
   const [booksLoading, setBooksLoading] = useState(false);
   const [booksError, setBooksError] = useState<string | null>(null);
+  const [lastBooksResult, setLastBooksResult] = useState<BooksQueryResult | null>(null);
 
-  // Состояние для текущей книги
   const [currentBook, setCurrentBook] = useState<IBook | null>(null);
   const [bookLoading, setBookLoading] = useState(false);
   const [bookError, setBookError] = useState<string | null>(null);
 
-  // Состояние для избранного
-  const [favorites, setFavoritesState] = useState<IBook[]>(getFavorites);
+  const requestCounterRef = useRef(0);
+  const lastRequestRef = useRef<string | null>(null);
 
-  // Поиск книг с поддержкой фильтров и пагинации
-  const searchBooks = useCallback(async (query: string, filter?: string, page: number = 0) => {
+  const searchBooks = useCallback(async (query: string, filters: FilterValues, page: number = 0) => {
     if (!query.trim()) {
       setBooks([]);
+      setLastBooksResult(null);
+      lastRequestRef.current = null;
       return;
     }
+
+    // Создаем уникальный идентификатор запроса из всех параметров
+    const requestKey = JSON.stringify({
+      query: query.trim(),
+      filter: filters.filter,
+      orderBy: filters.orderBy,
+      langRestrict: filters.langRestrict,
+      page
+    });
+
+    // Проверяем, является ли запрос дубликатом предыдущего
+    if (lastRequestRef.current === requestKey) {
+      return;
+    }
+
+    lastRequestRef.current = requestKey;
+    const currentRequestId = ++requestCounterRef.current;
 
     setBooksLoading(true);
     setBooksError(null);
 
     try {
-      // Формируем поисковый запрос с фильтрами
-      let searchQuery = query.trim();
-      if (filter) {
-        searchQuery += ` subject:${filter}`;
-      }
+      const result = await getBooksList(query.trim(), filters, page);
 
-      const result = await getBooksList(searchQuery);
-
-      // Если это первая страница, заменяем книги, иначе добавляем
-      if (page === 0) {
+      if (currentRequestId === requestCounterRef.current) {
         setBooks(result);
-      } else {
-        setBooks(prev => [...prev, ...result]);
+        setLastBooksResult({
+          books: result,
+          page,
+          requestId: currentRequestId,
+        });
       }
-    } catch (error: any) {
-      setBooksError(error.message || 'Ошибка при поиске книг');
-      if (page === 0) {
-        setBooks([]);
+    } catch {
+      if (currentRequestId === requestCounterRef.current) {
+        setBooksError("Не удалось загрузить книги. Попробуйте позже");
+        if (page === 0) {
+          setBooks([]);
+          setLastBooksResult(null);
+        }
       }
     } finally {
-      setBooksLoading(false);
+      if (currentRequestId === requestCounterRef.current) {
+        setBooksLoading(false);
+      }
     }
   }, []);
 
-  // Получение одной книги
-  const getBookById = useCallback(async (id: string) => {
+  const getBook = useCallback(async (id: string) => {
     setBookLoading(true);
     setBookError(null);
 
     try {
-      const result = await getBook(id);
-      setCurrentBook(result[0]); // getBook возвращает массив, берем первый элемент
-    } catch (error: any) {
-      setBookError(error.message || 'Ошибка при загрузке книги');
+      const result = await getBookById(id);
+      setCurrentBook(result);
+    } catch {
+      setBookError("Не удалось загрузить книги. Попробуйте позже");
       setCurrentBook(null);
     } finally {
       setBookLoading(false);
     }
   }, []);
 
-  // Работа с избранным
-  const addToFavorites = useCallback((book: IBook) => {
-    const newFavorites = [...favorites, book];
-    setFavoritesState(newFavorites);
-    setFavorites(newFavorites);
-  }, [favorites]);
-
-  const removeFromFavorites = useCallback((bookId: string) => {
-    const newFavorites = favorites.filter(book => book.id !== bookId);
-    setFavoritesState(newFavorites);
-    setFavorites(newFavorites);
-  }, [favorites]);
-
-  const isFavorite = useCallback((bookId: string) => {
-    return favorites.some(book => book.id === bookId);
-  }, [favorites]);
-
-  const getFavoritesCount = useCallback(() => {
-    return favorites.length;
-  }, [favorites]);
-
   return {
-    // Список книг
     books,
     booksLoading,
     booksError,
     searchBooks,
-
-    // Текущая книга
+    lastBooksResult,
     currentBook,
     bookLoading,
     bookError,
-    getBook: getBookById,
-
-    // Избранное
-    favorites,
-    addToFavorites,
-    removeFromFavorites,
-    isFavorite,
-    getFavoritesCount,
+    getBook,
   };
 }; 

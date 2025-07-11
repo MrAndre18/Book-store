@@ -1,22 +1,20 @@
 import { Link } from 'react-router';
 import { routes } from '@shared/routes';
-import { Logo } from '@shared/ui/logo';
 import { Heart } from 'lucide-react';
-import { useBooksQuery } from '@entities/book';
-import classes from './index.module.scss';
+import { useFavorites } from '@features/favorites';
 
 const Header = () => {
-  const { getFavoritesCount } = useBooksQuery();
-  const favoritesCount = getFavoritesCount();
+  const { favoritesCount } = useFavorites();
 
   return (
-    <header className={classes.header}>
-      <div className='container mx-auto px-4 py-4'>
+    <header className='bg-white/80 backdrop-blur border-b border-gray-200 shadow-sm sticky top-0 z-30 transition-all'>
+      <div className='container mx-auto px-6 py-3'>
         <div className='flex items-center justify-between'>
-          {/* Логотип */}
-          <Link to={routes.home} className='flex items-center gap-2'>
-            <Logo />
-            <span className='text-xl font-bold text-gray-800'>BookStore</span>
+          {/* Название */}
+          <Link
+            to={routes.home}
+            className='text-2xl font-semibold tracking-tight text-gray-900 select-none'>
+            BookStore
           </Link>
 
           {/* Иконка избранного с бейджем */}

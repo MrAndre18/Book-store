@@ -6,16 +6,16 @@
   @return math.div($size, $fs) * 1rem;
 }
 
-// transitions
+/* transitions */
 $transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
 $transition-duration: 0.5s;
 $transition: $transition-duration $transition-timing-function;
 
-// fonts
+/* fonts */
 $fs: 16px;
 $font: Inter, sans-serif;
 
-// Breakpoints
+/* Breakpoints */
 $breakpoints: (
   xxl: 1920px,
   ll: 1440px,
@@ -27,17 +27,17 @@ $breakpoints: (
   xs: 375px
 );
 
-//Количество колонок
+/* Количество колонок */
 $col-count-m: 4;
 $col-count-t: 4;
 $col-count-d: 12;
 
-//Боковые отступы по краям
+/* Боковые отступы по краям */
 $col-pad-m: rem(16px);
 $col-pad-t: rem(16px);
 $col-pad-d: rem(24px);
 
-//Промежутки между колонками
+/* Промежутки между колонками */
 $col-gap-m: rem(16px);
 $col-gap-t: rem(16px);
 $col-gap-d: rem(24px);

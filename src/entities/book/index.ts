@@ -1,4 +1,3 @@
-export * from './api';
-export * from './model';
-export * from './hooks';
-export * from './ui';
+export { getBooksList, getBookById, getBookDetails } from './api';
+export { useBooksQuery, useBookDetails } from './hooks';
+export type { IBook, IBookCard, IBookDetails } from './model/types';

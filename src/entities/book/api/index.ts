@@ -1,2 +1,2 @@
-export * from './getBooksList'
-export * from './getBook'
+export { getBooksList } from './getBooksList';
+export { getBookById, getBookDetails } from './getBooksByIds';

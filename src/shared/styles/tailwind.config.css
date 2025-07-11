@@ -18,3 +18,21 @@
 
   --default-transition-duration: 0.5s;
 }
+
+/* Переопределение стилей для container */
+.container {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 1rem !important; /* 16px на мобильных */
+  padding-right: 1rem !important; /* 16px на мобильных */
+}
+
+/* Десктопные стили для container */
+@media (min-width: 1200px) {
+  .container {
+    padding-left: 2.5rem !important; /* 40px на десктопе */
+    padding-right: 2.5rem !important; /* 40px на десктопе */
+  }
+}
