@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import { getBooksList, getBookById } from '../api';
-import { IBookCard } from '../model/types';
+import { IBookCard, IBook } from '../model/types';
 import { FilterValues } from '@shared/ui/filter-group/ui/FilterGroup';
 
 interface BooksQueryResult {
@@ -15,7 +15,7 @@ interface UseBooksQueryReturn {
   booksError: string | null;
   searchBooks: (query: string, filters: FilterValues, page?: number) => void;
   lastBooksResult: BooksQueryResult | null;
-  currentBook: any;
+  currentBook: IBook | null;
   bookLoading: boolean;
   bookError: string | null;
   getBook: (id: string) => void;
@@ -27,12 +27,12 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
   const [booksError, setBooksError] = useState<string | null>(null);
   const [lastBooksResult, setLastBooksResult] = useState<BooksQueryResult | null>(null);
 
-  const [currentBook, setCurrentBook] = useState<any>(null);
+  const [currentBook, setCurrentBook] = useState<IBook | null>(null);
   const [bookLoading, setBookLoading] = useState(false);
   const [bookError, setBookError] = useState<string | null>(null);
 
   const requestCounterRef = useRef(0);
-  const lastRequestRef = useRef<{ query: string; filters: FilterValues; page: number } | null>(null);
+  const lastRequestRef = useRef<string | null>(null);
 
   const searchBooks = useCallback(async (query: string, filters: FilterValues, page: number = 0) => {
     if (!query.trim()) {
@@ -42,19 +42,21 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
       return;
     }
 
-    // Проверяем, не дублируется ли запрос (защита от React StrictMode)
-    const currentRequest = { query: query.trim(), filters, page };
-    if (lastRequestRef.current &&
-      lastRequestRef.current.query === currentRequest.query &&
-      lastRequestRef.current.filters.filter === currentRequest.filters.filter &&
-      lastRequestRef.current.filters.orderBy === currentRequest.filters.orderBy &&
-      lastRequestRef.current.filters.langRestrict === currentRequest.filters.langRestrict &&
-      lastRequestRef.current.page === currentRequest.page) {
-      // Запрос дублируется, пропускаем
+    // Создаем уникальный идентификатор запроса из всех параметров
+    const requestKey = JSON.stringify({
+      query: query.trim(),
+      filter: filters.filter,
+      orderBy: filters.orderBy,
+      langRestrict: filters.langRestrict,
+      page
+    });
+
+    // Проверяем, является ли запрос дубликатом предыдущего
+    if (lastRequestRef.current === requestKey) {
       return;
     }
 
-    lastRequestRef.current = currentRequest;
+    lastRequestRef.current = requestKey;
     const currentRequestId = ++requestCounterRef.current;
 
     setBooksLoading(true);
@@ -71,9 +73,8 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
           requestId: currentRequestId,
         });
       }
-    } catch (error: unknown) {
+    } catch {
       if (currentRequestId === requestCounterRef.current) {
-        const err = error as { message?: string };
         setBooksError("Не удалось загрузить книги. Попробуйте позже");
         if (page === 0) {
           setBooks([]);
@@ -94,8 +95,7 @@ export const useBooksQuery = (): UseBooksQueryReturn => {
     try {
       const result = await getBookById(id);
       setCurrentBook(result);
-    } catch (error: unknown) {
-      const err = error as { message?: string };
+    } catch {
       setBookError("Не удалось загрузить книги. Попробуйте позже");
       setCurrentBook(null);
     } finally {

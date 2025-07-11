@@ -4,7 +4,7 @@ type Args = {
   name: string
   data: AxiosRequestConfig | AxiosResponse | AxiosError | unknown
   type: 'request' | 'response' | 'catch'
-  payload?: any
+  payload?: unknown
 }
 
 const logStyles = {
@@ -39,12 +39,10 @@ const formatTime = (): string => {
 
 const extractRequestInfo = (config: AxiosRequestConfig) => {
   return {
-    method: config.method?.toUpperCase() || 'UNKNOWN',
-    url: config.url || 'undefined',
-    baseURL: config.baseURL,
-    headers: config.headers,
-    timeout: config.timeout,
-    data: config.data
+    method: config.method?.toUpperCase() || 'GET',
+    url: config.url || '',
+    headers: config.headers || {},
+    data: config.data || null
   }
 }
 
@@ -52,9 +50,8 @@ const extractResponseInfo = (response: AxiosResponse) => {
   return {
     status: response.status,
     statusText: response.statusText,
-    headers: response.headers,
-    data: response.data,
-    config: response.config
+    headers: response.headers || {},
+    data: response.data || null
   }
 }
 
@@ -64,10 +61,9 @@ const extractErrorInfo = (error: AxiosError) => {
     code: error.code,
     status: error.response?.status,
     statusText: error.response?.statusText,
-    url: error.config?.url,
     method: error.config?.method?.toUpperCase(),
-    responseData: error.response?.data,
-    requestData: error.config?.data
+    url: error.config?.url,
+    responseData: error.response?.data || null
   }
 }
 
@@ -78,7 +74,6 @@ const log = ({ name, data, type, payload }: Args) => {
 
   console.group(`%c${logEmojis[type]} API ${type.toUpperCase()} - ${timestamp}`, logStyles[type])
 
-  // Основная информация
   console.log(`%c${logEmojis.url} Endpoint:`, logStyles.info, name)
 
   if (type === 'request' && 'method' in (data as AxiosRequestConfig)) {
@@ -124,13 +119,11 @@ const log = ({ name, data, type, payload }: Args) => {
     }
   }
 
-  // Дополнительный payload если есть
   if (payload) {
     console.log(`%c${logEmojis.payload} Additional Payload:`, logStyles.info)
     console.log(payload)
   }
 
-  // Полные данные для детального анализа
   console.log(`%c📋 Full ${type} data:`, logStyles.separator)
   console.log(data)
 

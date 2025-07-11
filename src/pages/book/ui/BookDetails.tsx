@@ -14,7 +14,7 @@ export const BookDetails: React.FC<BookDetailsProps> = ({
   pageCount,
   language,
 }) => {
-  // Форматируем дату публикации
+  /** Форматирует дату публикации */
   const formatDate = (dateString?: string) => {
     if (!dateString) return 'Не указана';
 
@@ -43,47 +43,35 @@ export const BookDetails: React.FC<BookDetailsProps> = ({
         <FileText size={20} className='text-green-400' />
         Детали
       </h2>
-      <div className='flex flex-col gap-3'>
+      <div className='grid grid-cols-1 gap-4 text-sm'>
         {publisher && (
-          <div className='flex items-center gap-3 bg-neutral-100  rounded p-2'>
-            <Award size={18} className='text-yellow-500' />
-            <div>
-              <p className='text-xs text-neutral-500 '>Издательство</p>
-              <p className='text-base text-neutral-800  font-medium'>
-                {publisher}
-              </p>
-            </div>
+          <div className='flex items-center gap-2'>
+            <Award size={16} className='text-neutral-400' />
+            <span className='text-neutral-600'>Издательство:</span>
+            <span className='text-neutral-800'>{publisher}</span>
           </div>
         )}
-        <div className='flex items-center gap-3 bg-neutral-100  rounded p-2'>
-          <Calendar size={18} className='text-blue-400' />
-          <div>
-            <p className='text-xs text-neutral-500 '>Дата публикации</p>
-            <p className='text-base text-neutral-800  font-medium'>
+        {publishedDate && (
+          <div className='flex items-center gap-2'>
+            <Calendar size={16} className='text-neutral-400' />
+            <span className='text-neutral-600'>Дата публикации:</span>
+            <span className='text-neutral-800'>
               {formatDate(publishedDate)}
-            </p>
+            </span>
           </div>
-        </div>
+        )}
         {pageCount && (
-          <div className='flex items-center gap-3 bg-neutral-100  rounded p-2'>
-            <FileText size={18} className='text-purple-400' />
-            <div>
-              <p className='text-xs text-neutral-500 '>Количество страниц</p>
-              <p className='text-base text-neutral-800  font-medium'>
-                {pageCount}
-              </p>
-            </div>
+          <div className='flex items-center gap-2'>
+            <FileText size={16} className='text-neutral-400' />
+            <span className='text-neutral-600'>Страниц:</span>
+            <span className='text-neutral-800'>{pageCount}</span>
           </div>
         )}
         {language && (
-          <div className='flex items-center gap-3 bg-neutral-100  rounded p-2'>
-            <Globe size={18} className='text-cyan-400' />
-            <div>
-              <p className='text-xs text-neutral-500 '>Язык</p>
-              <p className='text-base text-neutral-800  font-medium'>
-                {language}
-              </p>
-            </div>
+          <div className='flex items-center gap-2'>
+            <Globe size={16} className='text-neutral-400' />
+            <span className='text-neutral-600'>Язык:</span>
+            <span className='text-neutral-800'>{language}</span>
           </div>
         )}
       </div>

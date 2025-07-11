@@ -4,7 +4,7 @@ import { IBookCard } from '@entities/book';
 import { getFromLocalStorage, setToLocalStorage } from '@shared/utils/local-storage';
 import { localStorageKeys } from '@shared/utils/local-storage/constants';
 
-// Функция для загрузки избранного из localStorage
+/** Загружает избранные книги из localStorage */
 const loadFavoritesFromStorage = (): IFavorite[] => {
   const stored = getFromLocalStorage<IFavorite[]>(localStorageKeys.FAVORITES, []);
 
@@ -12,7 +12,6 @@ const loadFavoritesFromStorage = (): IFavorite[] => {
     return [];
   }
 
-  // Проверяем корректность структуры данных
   const validFavorites = stored.filter(item =>
     item &&
     typeof item === 'object' &&
@@ -28,7 +27,7 @@ const loadFavoritesFromStorage = (): IFavorite[] => {
   return validFavorites;
 };
 
-// Функция для сохранения в localStorage
+/** Сохраняет избранные книги в localStorage */
 const saveFavoritesToStorage = (favorites: IFavorite[]) => {
   setToLocalStorage(localStorageKeys.FAVORITES, favorites);
 };
@@ -63,12 +62,8 @@ const favoritesSlice = createSlice({
       );
       saveFavoritesToStorage(state.favorites);
     },
-    clearFavorites: (state) => {
-      state.favorites = [];
-      saveFavoritesToStorage(state.favorites);
-    },
   },
 });
 
-export const { addToFavorites, removeFromFavorites, clearFavorites } = favoritesSlice.actions;
+export const { addToFavorites, removeFromFavorites } = favoritesSlice.actions;
 export default favoritesSlice.reducer; 

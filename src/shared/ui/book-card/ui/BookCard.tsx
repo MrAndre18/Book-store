@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { BookOpen, Heart } from 'lucide-react';
 import { IBookCard } from '@entities/book';
-import { Heart, BookOpen } from 'lucide-react';
 
 interface BookCardProps {
   book: IBookCard;
@@ -9,7 +9,7 @@ interface BookCardProps {
   onRemoveFromFavorites?: (bookId: string) => void;
   isFavorite?: boolean;
   isLast?: boolean;
-  lastElementRef?: (node: HTMLDivElement) => void;
+  lastElementRef?: (node: HTMLDivElement | null) => void;
 }
 
 export const BookCard: React.FC<BookCardProps> = ({
@@ -22,6 +22,8 @@ export const BookCard: React.FC<BookCardProps> = ({
 }) => {
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+
     if (isFavorite && onRemoveFromFavorites) {
       onRemoveFromFavorites(book.id);
     } else if (!isFavorite && onAddToFavorites) {
@@ -32,24 +34,16 @@ export const BookCard: React.FC<BookCardProps> = ({
   return (
     <div
       ref={isLast ? lastElementRef : undefined}
-      className='relative bg-white border border-gray-200 rounded-2xl hover:shadow-xl hover:-translate-y-2 duration-200 transition-all flex flex-col h-full'
-      data-testid='book-card'>
-      {(onAddToFavorites || onRemoveFromFavorites) && (
+      className='bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex flex-col relative group'>
+      {onAddToFavorites && onRemoveFromFavorites && (
         <button
           onClick={handleFavoriteClick}
-          className={`absolute top-2 right-2 lg:top-4 lg:right-4 z-10 p-1 lg:p-1.5 rounded-full border border-gray-400 bg-white transition-colors
-            ${
-              isFavorite
-                ? 'text-red-500 border-red-200 bg-red-50'
-                : 'text-gray-600 hover:text-red-400'
-            }
-          `}
-          title={isFavorite ? 'Убрать из избранного' : 'В избранное'}>
+          className='absolute top-2 right-2 z-10 p-1.5 bg-white/80 hover:bg-white rounded-full shadow-sm transition-colors duration-200 group-hover:shadow-md'>
           <Heart
-            size={22}
-            className='lg:w-[26px] lg:h-[26px] w-[22px] h-[22px]'
-            fill={isFavorite ? '#ef4444' : 'none'}
-            strokeWidth={1.7}
+            size={16}
+            className={`transition-colors duration-200 ${
+              isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400'
+            }`}
           />
         </button>
       )}
@@ -58,7 +52,6 @@ export const BookCard: React.FC<BookCardProps> = ({
         to={`/book/${book.id}`}
         className='block flex-1 p-4 xl:p-6'
         tabIndex={0}>
-        {/* Book Cover */}
         <div className='w-full aspect-[1/1.2] bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center mb-2 lg:mb-3 overflow-hidden'>
           {book.image ? (
             <img
@@ -72,7 +65,6 @@ export const BookCard: React.FC<BookCardProps> = ({
           )}
         </div>
 
-        {/* Book Info */}
         <div className='flex flex-col gap-1.5 lg:gap-2'>
           <h3 className='text-base lg:text-lg font-semibold text-gray-900 line-clamp-2 lg:line-clamp-3'>
             {book.title}

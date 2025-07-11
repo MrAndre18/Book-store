@@ -1,9 +1,7 @@
 import { Link } from 'react-router';
 import { routes } from '@shared/routes';
-// import { Logo } from '@shared/ui/logo'; // Удалено
 import { Heart } from 'lucide-react';
 import { useFavorites } from '@features/favorites';
-import classes from './index.module.scss';
 
 const Header = () => {
   const { favoritesCount } = useFavorites();

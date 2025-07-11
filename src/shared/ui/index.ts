@@ -2,7 +2,6 @@
 export { BookCard } from './book-card';
 export { CategoryFilter } from './category-filter';
 export { LoadingSpinner } from './loading-spinner';
-export { Logo } from './logo';
 export { SearchInput } from './search-input';
 export { FilterGroup } from './filter-group';
 

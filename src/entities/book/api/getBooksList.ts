@@ -14,6 +14,22 @@ interface BooksListParams {
   fields?: string;
 }
 
+interface GoogleBooksItem {
+  id: string;
+  volumeInfo?: {
+    title?: string;
+    authors?: string[];
+    description?: string;
+    imageLinks?: {
+      medium?: string;
+      large?: string;
+      small?: string;
+      thumbnail?: string;
+      smallThumbnail?: string;
+    };
+  };
+}
+
 export const getBooksList = async (
   query: string,
   filters: FilterValues,
@@ -26,7 +42,6 @@ export const getBooksList = async (
     fields: 'items(id,volumeInfo/title,volumeInfo/authors,volumeInfo/description,volumeInfo/imageLinks/medium,volumeInfo/imageLinks/large,volumeInfo/imageLinks/small,volumeInfo/imageLinks/thumbnail,volumeInfo/imageLinks/smallThumbnail)'
   };
 
-  // Добавляем фильтры только если они заданы
   if (filters.filter) {
     params.filter = filters.filter;
   }
@@ -39,7 +54,7 @@ export const getBooksList = async (
     params.langRestrict = filters.langRestrict;
   }
 
-  const response: AxiosResponse<{ items: any[] }> = await $api.get(API_ENDPOINTS.getBooks, {
+  const response: AxiosResponse<{ items: GoogleBooksItem[] }> = await $api.get(API_ENDPOINTS.getBooks, {
     params,
     responseType: 'json',
   });

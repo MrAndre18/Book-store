@@ -12,7 +12,7 @@ export interface FilterValues {
 
 interface FilterGroupProps {
   values: FilterValues;
-  onChange: (filters: FilterValues) => void;
+  onChange: (values: FilterValues) => void;
   className?: string;
 }
 
@@ -49,7 +49,6 @@ export const FilterGroup: React.FC<FilterGroupProps> = ({
         aria-expanded={open}
         aria-controls='filters-content'>
         <h2 className='text-lg font-bold text-gray-800'>Фильтры</h2>
-        {/* Иконка-стрелка, видна только на <lg */}
         <span
           className={`xl:hidden transition-transform duration-200 ${
             open ? 'rotate-270' : 'rotate-90'
@@ -58,44 +57,30 @@ export const FilterGroup: React.FC<FilterGroupProps> = ({
           <ChevronRight width={20} height={20} />
         </span>
       </button>
-      {/* Контент фильтров: скрыт на <lg если закрыто, всегда виден на lg+ */}
-      <div
-        id='filters-content'
-        className={`!flex flex-col !gap-3 transition-all duration-200 overflow-hidden
-          ${open ? 'max-h-[500px] opacity-100 pt-4' : 'max-h-0 opacity-0'}
-          xl:max-h-none xl:opacity-100 xl:block
-        `}>
-        <div>
-          <span className='block text-sm font-semibold text-gray-700 !mb-2'>
-            Тип
-          </span>
+      {isAccordionOpen && (
+        <div
+          id='filters-content'
+          className={clsx('space-y-6 xl:space-y-8', open ? 'mt-4' : 'xl:mt-8')}>
           <CategoryFilter
+            label='Тип книги'
+            options={BOOK_FILTERS.contentType}
             value={values.filter}
             onChange={value => handleFilterChange('filter', value)}
-            options={BOOK_FILTERS.contentType}
           />
-        </div>
-        <div>
-          <span className='block text-sm font-semibold text-gray-700 !mb-2'>
-            Сортировка
-          </span>
           <CategoryFilter
+            label='Сортировка'
+            options={BOOK_FILTERS.orderBy}
             value={values.orderBy}
             onChange={value => handleFilterChange('orderBy', value)}
-            options={BOOK_FILTERS.orderBy}
           />
-        </div>
-        <div>
-          <span className='block text-sm font-semibold text-gray-700 !mb-2'>
-            Язык
-          </span>
           <CategoryFilter
+            label='Язык'
+            options={BOOK_FILTERS.language}
             value={values.langRestrict}
             onChange={value => handleFilterChange('langRestrict', value)}
-            options={BOOK_FILTERS.language}
           />
         </div>
-      </div>
+      )}
     </div>
   );
 };

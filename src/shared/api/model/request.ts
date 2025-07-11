@@ -7,31 +7,16 @@ import { API_DOMAIN } from '@shared/constants'
 
 const isProduction = false
 
-// Создаем экземпляр Axios
+/** Экземпляр Axios для API запросов */
 export const $api = axios.create({
   baseURL: API_DOMAIN,
 })
 
-// const refreshToken = async () => {
-//   const refreshToken = getFromLocalStorage(localStorageKeys.refresh_token)
-//   const { data } = await $api.post('/auth/refresh', { refresh_token: refreshToken })
-
-//   setToLocalStorage(localStorageKeys.access_token, data['access_token'])
-//   setToLocalStorage(localStorageKeys.refresh_token, data['refresh_token'])
-
-//   return data['access_token']
-// }
-
-// Интерцептор для запросов
+/** Интерцептор для запросов */
 $api.interceptors.request.use(
   async config => {
-    // const token = getFromLocalStorage(localStorageKeys.ACCESS_TOKEN)
-    config.headers['Content-Type']
-    config.headers.Accept
-
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`
-    // }
+    config.headers['Content-Type'] = 'application/json'
+    config.headers.Accept = 'application/json'
 
     if (!isProduction) {
       log({
@@ -48,7 +33,7 @@ $api.interceptors.request.use(
   }
 )
 
-// Интерцептор для ответов
+/** Интерцептор для ответов */
 $api.interceptors.response.use(
   response => {
     if (!isProduction) {
@@ -67,10 +52,9 @@ $api.interceptors.response.use(
   }
 )
 
-// Обработка ошибок
+/** Обработка ошибок HTTP запросов */
 const handleResponseError = (error: AxiosError<ErrorResponse>): void => {
   if (error.response?.status) {
-    // Ошибки с HTTP статусом
     const status = error.response?.status
     const errorKey = `ERROR_${status}` as keyof typeof errorMap
 
@@ -80,14 +64,12 @@ const handleResponseError = (error: AxiosError<ErrorResponse>): void => {
     }
     eventEmitter.emit('request-error', errorData)
   } else if (error.code === 'ERR_NETWORK' || error.code === 'ENOTFOUND') {
-    // Сетевые ошибки (неправильный URL, нет интернета и т.д.)
     const errorData: ErrorEventEmitter = {
       action: 'toast',
       message: 'Не удалось загрузить книги. Попробуйте позже'
     }
     eventEmitter.emit('request-error', errorData)
   } else {
-    // Другие ошибки
     const errorData: ErrorEventEmitter = {
       action: 'toast',
       message: 'Не удалось загрузить книги. Попробуйте позже'
@@ -96,7 +78,7 @@ const handleResponseError = (error: AxiosError<ErrorResponse>): void => {
   }
 }
 
-// Логирование ошибок
+/** Логирование ошибок запросов */
 const logErrorDetails = (error: AxiosError<ErrorResponse>): void => {
   log({
     name: axios.isAxiosError(error) ? (error.config?.url ?? 'undefined url') : 'Not instance of AxiosError',

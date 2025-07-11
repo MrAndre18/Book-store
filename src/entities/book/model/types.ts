@@ -10,7 +10,7 @@ export interface IBook {
   };
 }
 
-// Расширенные типы для детальной информации о книге
+/** Расширенные типы для детальной информации о книге */
 export interface IBookDetails {
   id: string;
   volumeInfo: {
@@ -131,6 +131,10 @@ export interface VolumeInfo {
 export interface ImageLinks {
   smallThumbnail: string;
   thumbnail: string;
+  small: string;
+  medium: string;
+  large: string;
+  extraLarge: string;
 }
 
 export interface PanelizationSummary {

@@ -1,9 +1,9 @@
 import { IBookCard } from '@entities/book';
 
-// Структура избранной книги с полными данными
+/** Структура избранной книги */
 export interface IFavorite {
-  book: IBookCard; // Полные данные книги
-  addedAt: string; // ISO string даты добавления
+  book: IBookCard;
+  addedAt: string;
 }
 
 export interface IFavoritesState {

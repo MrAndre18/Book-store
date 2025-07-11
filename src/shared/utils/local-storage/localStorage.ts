@@ -31,3 +31,4 @@ export const clearLocalStorage = (): void => {
     console.error('Error clearing localStorage:', error);
   }
 };
+

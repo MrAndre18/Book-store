@@ -6,7 +6,6 @@ export const FavoritesPage = () => {
 
   return (
     <div className='py-6'>
-      {/* Заголовок */}
       <div className='mb-8'>
         <h1 className='text-3xl font-bold text-gray-900 mb-2'>
           Избранные книги
@@ -16,7 +15,6 @@ export const FavoritesPage = () => {
         </p>
       </div>
 
-      {/* Список избранных книг */}
       <BookList
         books={favoritesBooks}
         loading={loading}
@@ -26,7 +24,6 @@ export const FavoritesPage = () => {
         showFavorites={true}
       />
 
-      {/* Пустое состояние */}
       {!loading && !error && favoritesBooks.length === 0 && (
         <div className='text-center py-12'>
           <p className='text-gray-500 text-lg'>

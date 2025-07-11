@@ -74,7 +74,6 @@ export const BookPage: React.FC = () => {
 
   const { volumeInfo, saleInfo, accessInfo } = bookDetails;
 
-  // Получаем лучшее доступное изображение
   const getBestImage = () => {
     const images = volumeInfo.imageLinks;
     return (

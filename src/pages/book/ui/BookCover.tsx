@@ -1,25 +1,20 @@
-import React from 'react';
-import { BookOpen, Star } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 interface BookCoverProps {
   imageUrl?: string;
   title?: string;
-  averageRating?: number;
 }
 
-export const BookCover: React.FC<BookCoverProps> = ({
-  imageUrl,
-  title,
-  averageRating,
-}) => {
+export const BookCover: React.FC<BookCoverProps> = ({ imageUrl, title }) => {
   return (
-    <div className='flex flex-col items-center gap-3 w-full'>
-      <div className='w-full aspect-[3/4] rounded-lg overflow-hidden flex items-center justify-center border border-neutral-200'>
+    <div className='w-full max-w-xs mx-auto'>
+      <div className='w-full aspect-[3/4] bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden shadow-md'>
         {imageUrl ? (
           <img
             src={imageUrl}
-            alt={title}
+            alt={title || 'Обложка книги'}
             className='object-cover w-full h-full'
+            loading='lazy'
           />
         ) : (
           <div className='flex items-center justify-center w-full h-full'>

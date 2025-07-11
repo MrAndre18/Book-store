@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { RootState } from '@app/store';
 import { IBookCard } from '@entities/book';
-import { addToFavorites, removeFromFavorites, clearFavorites } from '../model/slice';
+import { addToFavorites, removeFromFavorites } from '../model/slice';
 
 export const useFavorites = () => {
   const dispatch = useDispatch();
@@ -27,11 +27,6 @@ export const useFavorites = () => {
     }
   }, [dispatch, favorites]);
 
-  const clearFavoritesHandler = useCallback(() => {
-    dispatch(clearFavorites());
-    toast.info('Избранное очищено');
-  }, [dispatch]);
-
   const isFavorite = useCallback((bookId: string) => {
     return favorites.some(favorite => favorite.book.id === bookId);
   }, [favorites]);
@@ -51,7 +46,6 @@ export const useFavorites = () => {
     favoritesCount: favorites.length,
     addToFavorites: addToFavoritesHandler,
     removeFromFavorites: removeFromFavoritesHandler,
-    clearFavorites: clearFavoritesHandler,
     isFavorite,
   };
 }; 
