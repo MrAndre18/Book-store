@@ -12,9 +12,9 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
 }) => {
   return (
     <div
-      className={`${CSS_CLASSES.errorMessage} ${className}`}
+      className={`bg-red-500 text-white text-sm rounded px-4 py-2 ${className}`}
       data-testid='error-message'>
-      Ошибка: {message}
+      {message}
     </div>
   );
 };

@@ -1,24 +1,23 @@
 import { Link } from 'react-router';
 import { routes } from '@shared/routes';
-import { Logo } from '@shared/ui/logo';
+// import { Logo } from '@shared/ui/logo'; // Удалено
 import { Heart } from 'lucide-react';
 import { useFavorites } from '@features/favorites';
-import { CSS_CLASSES } from '@shared/constants';
 import classes from './index.module.scss';
 
 const Header = () => {
-  const { favorites } = useFavorites();
-  const favoritesCount = favorites.length;
+  const { favoritesCount } = useFavorites();
 
   return (
-    <header className={classes.header}>
-      <div className='container mx-auto px-4 py-4'>
+    <header className='bg-white/80 backdrop-blur border-b border-gray-200 shadow-sm sticky top-0 z-30 transition-all'>
+      <div className='container mx-auto px-6 py-3'>
         <div className='flex items-center justify-between'>
-          {/* Логотип */}
-          <div className='flex items-center gap-2'>
-            <Logo to={routes.home} />
-            <span className='text-xl font-bold text-gray-800'>BookStore</span>
-          </div>
+          {/* Название */}
+          <Link
+            to={routes.home}
+            className='text-2xl font-semibold tracking-tight text-gray-900 select-none'>
+            BookStore
+          </Link>
 
           {/* Иконка избранного с бейджем */}
           <Link
@@ -26,7 +25,7 @@ const Header = () => {
             className='relative p-2 rounded-lg hover:bg-gray-100 transition-colors'>
             <Heart size={24} className='text-gray-600' />
             {favoritesCount > 0 && (
-              <span className={CSS_CLASSES.favoritesBadge}>
+              <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center'>
                 {favoritesCount > 99 ? '99+' : favoritesCount}
               </span>
             )}

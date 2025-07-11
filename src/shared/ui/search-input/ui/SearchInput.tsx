@@ -1,6 +1,5 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-import { CSS_CLASSES, MESSAGES } from '@shared/constants';
 
 interface SearchInputProps {
   value: string;
@@ -12,7 +11,7 @@ interface SearchInputProps {
 export const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
-  placeholder = MESSAGES.ui.searchPlaceholder,
+  placeholder = 'Введите название книги, автора или ключевые слова...',
   className = '',
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,7 +21,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   return (
     <div className={`relative ${className}`}>
       <Search
-        className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
+        className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-300'
         size={20}
       />
       <input
@@ -30,7 +29,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className={CSS_CLASSES.searchInput}
+        className='w-full pl-10 pr-4 py-2 rounded-lg !border !border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:!border-blue-500 transition'
       />
     </div>
   );

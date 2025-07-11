@@ -1,6 +1,5 @@
 import { useFavoritesBooks } from '@features/favorites';
 import { BookList } from '@widgets/book-list';
-import { MESSAGES } from '@shared/constants';
 
 export const FavoritesPage = () => {
   const { favoritesBooks, loading, error } = useFavoritesBooks();
@@ -30,7 +29,10 @@ export const FavoritesPage = () => {
       {/* Пустое состояние */}
       {!loading && !error && favoritesBooks.length === 0 && (
         <div className='text-center py-12'>
-          <p className='text-gray-500 text-lg'>{MESSAGES.ui.favoritesEmpty}</p>
+          <p className='text-gray-500 text-lg'>
+            У вас пока нет избранных книг. Найдите интересные книги и добавьте
+            их в избранное!
+          </p>
           <p className='text-gray-400 mt-2'>
             Найдите интересные книги на главной странице и добавьте их в
             избранное

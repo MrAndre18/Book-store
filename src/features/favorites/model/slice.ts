@@ -1,43 +1,36 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IFavorite, IFavoritesState } from './types';
+import { IBookCard } from '@entities/book';
 import { getFromLocalStorage, setToLocalStorage } from '@shared/utils/local-storage';
 import { localStorageKeys } from '@shared/utils/local-storage/constants';
 
 // Функция для загрузки избранного из localStorage
 const loadFavoritesFromStorage = (): IFavorite[] => {
-  const stored = getFromLocalStorage<string[]>(localStorageKeys.FAVORITES, []);
-
-  console.log('Загружено из localStorage:', stored);
+  const stored = getFromLocalStorage<IFavorite[]>(localStorageKeys.FAVORITES, []);
 
   if (!stored || !Array.isArray(stored)) {
-    console.log('Некорректные данные в localStorage, возвращаем пустой массив');
     return [];
   }
 
-  // Проверяем, что все элементы - строки
-  const hasInvalidItems = stored.some(item => typeof item !== 'string');
-  if (hasInvalidItems) {
-    console.error('Обнаружены некорректные данные в localStorage:', stored);
-    console.log('Очищаем localStorage и возвращаем пустой массив');
-    setToLocalStorage(localStorageKeys.FAVORITES, []);
-    return [];
+  // Проверяем корректность структуры данных
+  const validFavorites = stored.filter(item =>
+    item &&
+    typeof item === 'object' &&
+    item.book &&
+    item.addedAt &&
+    typeof item.book.id === 'string'
+  );
+
+  if (validFavorites.length !== stored.length) {
+    setToLocalStorage(localStorageKeys.FAVORITES, validFavorites);
   }
 
-  // Конвертируем массив строк в массив объектов с датой
-  const favorites = stored.map(id => ({
-    id,
-    addedAt: new Date().toISOString() // Используем текущую дату для старых записей
-  }));
-
-  console.log('Конвертированные favorites:', favorites);
-  return favorites;
+  return validFavorites;
 };
 
 // Функция для сохранения в localStorage
 const saveFavoritesToStorage = (favorites: IFavorite[]) => {
-  const ids = favorites.map(fav => fav.id);
-  console.log('Сохраняем в localStorage:', ids);
-  setToLocalStorage(localStorageKeys.FAVORITES, ids);
+  setToLocalStorage(localStorageKeys.FAVORITES, favorites);
 };
 
 const initialState: IFavoritesState = {
@@ -50,21 +43,23 @@ const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
-    addToFavorites: (state, action: PayloadAction<string>) => {
-      const bookId = action.payload;
-      const exists = state.favorites.some(favorite => favorite.id === bookId);
+    addToFavorites: (state, action: PayloadAction<IBookCard>) => {
+      const book = action.payload;
+      const exists = state.favorites.some(favorite => favorite.book.id === book.id);
+
       if (!exists) {
-        state.favorites.push({
-          id: bookId,
+        const newFavorite: IFavorite = {
+          book,
           addedAt: new Date().toISOString(),
-        });
+        };
+        state.favorites.push(newFavorite);
         saveFavoritesToStorage(state.favorites);
       }
     },
     removeFromFavorites: (state, action: PayloadAction<string>) => {
       const bookId = action.payload;
       state.favorites = state.favorites.filter(
-        favorite => favorite.id !== bookId
+        favorite => favorite.book.id !== bookId
       );
       saveFavoritesToStorage(state.favorites);
     },

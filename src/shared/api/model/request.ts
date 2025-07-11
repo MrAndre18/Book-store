@@ -69,8 +69,6 @@ $api.interceptors.response.use(
 
 // Обработка ошибок
 const handleResponseError = (error: AxiosError<ErrorResponse>): void => {
-  console.info('error', error)
-
   if (error.response?.status) {
     // Ошибки с HTTP статусом
     const status = error.response?.status

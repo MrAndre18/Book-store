@@ -1,35 +1,54 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { RootState } from '@app/store';
+import { IBookCard } from '@entities/book';
 import { addToFavorites, removeFromFavorites, clearFavorites } from '../model/slice';
 
 export const useFavorites = () => {
   const dispatch = useDispatch();
   const { favorites } = useSelector((state: RootState) => state.favorites);
 
-  const addToFavoritesHandler = useCallback((bookId: string) => {
-    dispatch(addToFavorites(bookId));
-  }, [dispatch]);
+  const addToFavoritesHandler = useCallback((book: IBookCard) => {
+    const isAlreadyFavorite = favorites.some(favorite => favorite.book.id === book.id);
+
+    if (!isAlreadyFavorite) {
+      dispatch(addToFavorites(book));
+      toast.success('Книга добавлена в избранное');
+    }
+  }, [dispatch, favorites]);
 
   const removeFromFavoritesHandler = useCallback((bookId: string) => {
-    dispatch(removeFromFavorites(bookId));
-  }, [dispatch]);
+    const favoriteBook = favorites.find(favorite => favorite.book.id === bookId);
+
+    if (favoriteBook) {
+      dispatch(removeFromFavorites(bookId));
+      toast.success('Книга удалена из избранного');
+    }
+  }, [dispatch, favorites]);
 
   const clearFavoritesHandler = useCallback(() => {
     dispatch(clearFavorites());
+    toast.info('Избранное очищено');
   }, [dispatch]);
 
   const isFavorite = useCallback((bookId: string) => {
-    return favorites.some(favorite => favorite.id === bookId);
+    return favorites.some(favorite => favorite.book.id === bookId);
   }, [favorites]);
 
   const getFavoriteIds = useCallback(() => {
-    return favorites.map(favorite => favorite.id);
+    return favorites.map(favorite => favorite.book.id);
+  }, [favorites]);
+
+  const getFavoriteBooks = useCallback(() => {
+    return favorites.map(favorite => favorite.book);
   }, [favorites]);
 
   return {
     favorites,
     favoriteIds: getFavoriteIds(),
+    favoriteBooks: getFavoriteBooks(),
+    favoritesCount: favorites.length,
     addToFavorites: addToFavoritesHandler,
     removeFromFavorites: removeFromFavoritesHandler,
     clearFavorites: clearFavoritesHandler,

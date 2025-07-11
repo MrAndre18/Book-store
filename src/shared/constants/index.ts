@@ -4,24 +4,51 @@ export const API_ENDPOINTS = {
   getBooks: '/volumes',
 } as const;
 
-// Локальное хранилище ключи (используются утилиты из @shared/utils/local-storage)
-
-// Пагинация
-export const PAGINATION = {
-  defaultPageSize: 10,
-  maxPageSize: 40,
+// Константы для API запросов
+export const API_LIMITS = {
+  booksPerRequest: 10, // Количество книг, загружаемых за один запрос (Google Books API позволяет от 0 до 40)
 } as const;
 
-// Фильтры категорий
-export const BOOK_CATEGORIES = [
-  { value: '', label: 'Все категории' },
-  { value: 'fiction', label: 'Художественная литература' },
-  { value: 'nonfiction', label: 'Документальная литература' },
-  { value: 'science', label: 'Наука' },
-  { value: 'technology', label: 'Технологии' },
-  { value: 'history', label: 'История' },
-  { value: 'biography', label: 'Биографии' },
-] as const;
+// Локальное хранилище ключи (используются утилиты из @shared/utils/local-storage)
+
+// Пагинация (для совместимости)
+export const PAGINATION = {
+  defaultPageSize: API_LIMITS.booksPerRequest,
+  maxPageSize: 40, // Максимальное значение для Google Books API
+} as const;
+
+// Фильтры для Google Books API
+export const BOOK_FILTERS = {
+  // Основной фильтр (filter parameter)
+  contentType: [
+    { value: '', label: 'Все книги' },
+    { value: 'ebooks', label: 'Электронные книги' },
+    { value: 'free-ebooks', label: 'Бесплатные книги' },
+    { value: 'full', label: 'Полный доступ' },
+    { value: 'paid-ebooks', label: 'Платные книги' },
+    { value: 'partial', label: 'Частичный доступ' },
+  ],
+  // Тип публикации (printType parameter)
+  printType: [
+    { value: 'all', label: 'Все типы' },
+    { value: 'books', label: 'Только книги' },
+    { value: 'magazines', label: 'Только журналы' },
+  ],
+  // Сортировка (orderBy parameter)
+  orderBy: [
+    { value: 'relevance', label: 'По релевантности' },
+    { value: 'newest', label: 'По новизне' },
+  ],
+  // Язык (langRestrict parameter)
+  language: [
+    { value: '', label: 'Все языки' },
+    { value: 'ru', label: 'Русский' },
+    { value: 'en', label: 'Английский' },
+  ],
+} as const;
+
+// Старые категории - оставляем для совместимости (можно удалить позже)
+export const BOOK_CATEGORIES = BOOK_FILTERS.contentType;
 
 // Сообщения
 export const MESSAGES = {
@@ -41,6 +68,11 @@ export const MESSAGES = {
     enterSearchQuery: 'Введите поисковый запрос, чтобы найти книги',
     searchPlaceholder: 'Введите название книги, автора или ключевые слова...',
     favoritesEmpty: 'У вас пока нет избранных книг. Найдите интересные книги и добавьте их в избранное!',
+    // Новые сообщения для фильтров
+    filterContentType: 'Тип доступа',
+    filterPrintType: 'Тип публикации',
+    filterOrderBy: 'Сортировка',
+    filterLanguage: 'Язык',
   },
 } as const;
 

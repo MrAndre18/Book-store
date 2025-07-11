@@ -1,5 +1,4 @@
 import React from 'react';
-import { CSS_CLASSES, MESSAGES } from '@shared/constants';
 
 interface LoadingSpinnerProps {
   message?: string;
@@ -7,13 +6,12 @@ interface LoadingSpinnerProps {
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
-  message = MESSAGES.ui.loadingBooks,
+  message = 'Загрузка книг...',
   className = '',
 }) => {
   return (
-    <div className={`text-center py-8 ${className}`}>
-      <div className={CSS_CLASSES.loadingSpinner}></div>
-      <p className='mt-2 text-gray-600'>{message}</p>
+    <div className={`flex justify-center items-center py-8 ${className}`}>
+      <div className='inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500'></div>
     </div>
   );
 };

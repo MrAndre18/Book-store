@@ -1,7 +1,11 @@
-export * from './layouts';
-export * from './logo';
-export * from './book-card';
-export * from './search-input';
-export * from './category-filter';
-export * from './loading-spinner';
-export * from './error-message';
+// UI компоненты
+export { BookCard } from './book-card';
+export { CategoryFilter } from './category-filter';
+export { ErrorMessage } from './error-message';
+export { LoadingSpinner } from './loading-spinner';
+export { Logo } from './logo';
+export { SearchInput } from './search-input';
+export { FilterGroup } from './filter-group';
+
+// Layouts
+export { AppLayout } from './layouts';
