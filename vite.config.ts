@@ -6,6 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Book-store/',
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

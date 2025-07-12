@@ -25,7 +25,7 @@ export const BookPage: React.FC = () => {
       <div className='flex flex-col items-center justify-center min-h-[60vh] '>
         <div className='flex flex-col items-center gap-4 p-6 rounded-lg shadow-md '>
           <LoadingSpinner />
-          <p className='text-neutral-700 dark:text-neutral-200 text-lg font-medium'>
+          <p className='text-neutral-700 text-lg font-medium'>
             Загружаем книгу...
           </p>
         </div>
@@ -52,13 +52,13 @@ export const BookPage: React.FC = () => {
     return (
       <div className='flex flex-col items-center justify-center min-h-[60vh] '>
         <div className='flex flex-col items-center gap-4 p-6 rounded-lg shadow-md '>
-          <div className='bg-blue-100 dark:bg-blue-900 p-4 rounded-full'>
-            <BookOpen size={48} className='text-blue-500 dark:text-blue-300' />
+          <div className='bg-blue-100 p-4 rounded-full'>
+            <BookOpen size={48} className='text-blue-500' />
           </div>
-          <h2 className='text-xl font-semibold text-neutral-800 dark:text-neutral-100'>
+          <h2 className='text-xl font-semibold text-neutral-800'>
             Книга не найдена
           </h2>
-          <p className='text-neutral-600 dark:text-neutral-300 text-base'>
+          <p className='text-neutral-600 text-base'>
             Запрашиваемая книга не существует или недоступна.
           </p>
           <Link

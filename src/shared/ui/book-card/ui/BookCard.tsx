@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import { BookOpen, Heart } from 'lucide-react';
 import { IBookCard } from '@entities/book';
+import { routes } from '@shared/routes';
 
 interface BookCardProps {
   book: IBookCard;
@@ -49,7 +50,7 @@ export const BookCard: React.FC<BookCardProps> = ({
       )}
 
       <Link
-        to={`/book/${book.id}`}
+        to={`${routes.book.replace(':bookId', book.id)}`}
         className='block flex-1 p-4 xl:p-6'
         tabIndex={0}>
         <div className='w-full aspect-[1/1.2] bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center mb-2 lg:mb-3 overflow-hidden'>
