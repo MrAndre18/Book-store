@@ -118,7 +118,6 @@ export const BookPage: React.FC = () => {
           <BookSidebar
             imageUrl={getBestImage()}
             title={volumeInfo.title}
-            averageRating={volumeInfo.averageRating}
             bookId={bookDetails.id}
             isFavorite={isFavorite(bookDetails.id)}
             onToggleFavorite={handleFavoriteClick}
